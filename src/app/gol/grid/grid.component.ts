@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {createNextGeneration} from "../../../util/GoL/Grid";
 
-const Width = 3000;
+const Width = 1000;
 const Height = 1000;
-const Resolution = 10;
+const Resolution = 5;
 
 @Component({
   selector: 'app-grid',
@@ -48,7 +49,7 @@ export class GridComponent implements AfterViewInit {
 
   private animate() {
     requestAnimationFrame(() => this.animate());
-    this.createNextGeneration(this.grid);
+    this.grid = createNextGeneration(this.grid, Height, Width, Resolution)
     this.render();
   }
 
@@ -56,10 +57,8 @@ export class GridComponent implements AfterViewInit {
     const canvas = this.ctx;
     const res = Resolution;
 
-    // Clear the canvas
     canvas.clearRect(0, 0, Width, Height);
 
-    // Render only live cells
     this.grid.forEach(cell => {
       const [rowIndex, colIndex] = cell.split(',').map(Number);
       canvas.beginPath();
@@ -67,43 +66,5 @@ export class GridComponent implements AfterViewInit {
       canvas.fillStyle = 'black';
       canvas.fill();
     });
-  }
-
-  private createNextGeneration(grid: Set<string>) {
-    const nextGrid = new Set<string>();
-    const cellsToCheck = new Set<string>();
-
-    const directions = [
-      [-1, -1], [-1, 0], [-1, 1],
-      [0, -1], [0, 1],
-      [1, -1], [1, 0], [1, 1]
-    ];
-
-    // Add all live cells and their neighbors to cellsToCheck
-    grid.forEach(cell => {
-      const [x, y] = cell.split(',').map(Number);
-      cellsToCheck.add(`${x},${y}`);
-      directions.forEach(([dx, dy]) => {
-        cellsToCheck.add(`${x + dx},${y + dy}`);
-      });
-    });
-
-    // Check each cell in cellsToCheck
-    cellsToCheck.forEach(cell => {
-      const [x, y] = cell.split(',').map(Number);
-      let liveNeighbors = 0;
-
-      directions.forEach(([dx, dy]) => {
-        if (grid.has(`${x + dx},${y + dy}`)) {
-          liveNeighbors++;
-        }
-      });
-
-      if (liveNeighbors === 3 || (liveNeighbors === 2 && grid.has(cell))) {
-        nextGrid.add(cell);
-      }
-    });
-
-    this.grid = nextGrid;
   }
 }
