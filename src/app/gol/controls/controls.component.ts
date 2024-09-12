@@ -9,12 +9,22 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class ControlsComponent {
 
-  private run: boolean = false;
+  protected run: boolean = false;
 
-  @Output() run = new EventEmitter<boolean>();
+  @Output() runEmitter = new EventEmitter<boolean>();
+  @Output() clearEmitter = new EventEmitter<boolean>();
+  @Output() randomEmitter = new EventEmitter<boolean>();
 
   protected OnRunButtonClick(){
     this.run = !this.run;
-    this.run.emit(this.run);
+    this.runEmitter.emit(this.run);
+  }
+
+  OnClearButtonClick() {
+    this.clearEmitter.emit(true);
+  }
+
+  OnRandomiseButtonClick() {
+    this.randomEmitter.emit(true);
   }
 }

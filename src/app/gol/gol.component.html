@@ -1,2 +1,12 @@
-<app-grid></app-grid>
-<app-controls (run)="run()"></app-controls>
+<app-grid
+  [run]="shouldRun"
+  [clear]="shouldClear"
+  [randomise]="shouldRandomise"
+  (clearEmitter)="clear($event)"
+  (randomEmitter)="randomise($event)">
+</app-grid>
+<app-controls
+  (runEmitter)="run($event)"
+  (clearEmitter)="clear($event)"
+  (randomEmitter)="randomise($event)">
+</app-controls>
