@@ -3,7 +3,7 @@ import {createNextGeneration} from "../../../util/GoL/Grid";
 
 const Width = 1000;
 const Height = 1000;
-const Resolution = 4;
+const Resolution = 10;
 
 @Component({
   selector: 'app-grid',
@@ -93,5 +93,23 @@ export class GridComponent implements AfterViewInit {
         }
       }
     }
+  }
+
+  protected click(event: MouseEvent) {
+    const canvas = this.canvas.nativeElement;
+    const boundingRect = canvas.getBoundingClientRect();
+
+    const x = event.clientX - boundingRect.left;
+    const y = event.clientY - boundingRect.top;
+
+    const colIndex = Math.floor(x / Resolution);
+    const rowIndex = Math.floor(y / Resolution);
+
+    if (this.grid.has(`${rowIndex},${colIndex}`)) {
+      this.grid.delete(`${rowIndex},${colIndex}`)
+    } else {
+      this.grid.add(`${rowIndex},${colIndex}`)
+    }
+    this.render();
   }
 }
